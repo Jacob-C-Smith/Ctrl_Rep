@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title></title>
+        <link rel="stylesheet" href="/static/style.css">
+        <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    </head>
+
+    <body>
+        <main class="catalog">
+            <h1>{{ .User.Username }}</h1>
+            {{ range .Catalog }}
+                <a href="/card?start={{ .Name }}">
+                    <section class="plan" id="{{ .Name }}" hx-trigger="clicked" hx-post="/card">
+                        <h1>{{ .Name }} <hr> {{ len .Exercises }}&nbsp;Exercises</h1>
+                    </section>
+                </a>
+            {{ end }}
+        </main>
+    </body>
+</html>

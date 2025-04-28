@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title></title>
+        <link rel="stylesheet" href="/static/style.css">
+        <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    </head>
+
+    <body>
+        <main>
+            <a href="/"><h1>{{ .User.Username }}</h1></a>
+            <section class="plan" id="{{ .Card.ExerciseSchema.Exercise }}" hx-trigger="click" hx-post="/card/advance" hx-swap="outerHTML">
+                <p>{{ .Card.ExerciseSchema.Exercise }}</p>
+                <hr>
+                <p>{{ .Card.ExerciseSchema.Sets }}&nbsp;Sets</p>
+                <hr>
+                <p>{{ .Card.ExerciseSchema.Reps }}&nbsp;Reps</p>
+            </section>
+        </main>
+    </body>
+</html>

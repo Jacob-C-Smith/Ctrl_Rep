@@ -1,0 +1,45 @@
+{
+    "name": "Leg\u00a0Day",
+    "exercises": [
+        {
+            "exercise": "Barbell Squats",
+            "sets": 4,
+            "reps": 6
+        },
+        {
+            "exercise": "Leg Press",
+            "sets": 4,
+            "reps": 8
+        },
+        {
+            "exercise": "Romanian Deadlifts",
+            "sets": 3,
+            "reps": 10
+        },
+        {
+            "exercise": "Walking Lunges",
+            "sets": 3,
+            "reps": 12
+        },
+        {
+            "exercise": "Leg Curls (Hamstring Machine)",
+            "sets": 3,
+            "reps": 10
+        },
+        {
+            "exercise": "Leg Extensions",
+            "sets": 3,
+            "reps": 10
+        },
+        {
+            "exercise": "Standing Calf Raises",
+            "sets": 4,
+            "reps": 12
+        },
+        {
+            "exercise": "Seated Calf Raises",
+            "sets": 4,
+            "reps": 12
+        }
+    ]
+}

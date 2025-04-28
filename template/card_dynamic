@@ -1,0 +1,6 @@
+<section class="card" id="{{ .ExerciseSchema.Exercise }}" hx-trigger="click" hx-post="/card/advance" hx-swap="outerHTML">
+    <h2>{{ .ExerciseSchema.Exercise }}</h2>
+    <hr>
+    <p>{{ .ExerciseSchema.Sets }}&nbsp;Sets</p>
+    <p>{{ .ExerciseSchema.Reps }}&nbsp;Reps</p>
+</section>
