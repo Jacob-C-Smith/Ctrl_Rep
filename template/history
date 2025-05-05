@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Fit > History</title>
+        <link rel="stylesheet" href="/static/style.css">
+        <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    </head>
+
+    <body>
+        <main class="catalog">
+            <h1><a href="/">{{ .User.Username }}</a> > history </h1>
+            <i>{{ .User.Day }} recorded exercise days </i>
+            <br>
+            {{ range .Days }}
+                <section class="workout_day">
+                    <h3>{{ .Date }} - {{ .Name }}</h3>
+                    <table>
+                        <thead>
+                            <th>Exercise</th>
+                            <th>Reps</th>
+                            <th>Weight (kg)</th>
+                            <th>Time</th>
+                        </thead>
+                        <tbody>
+                            {{ range .Acts }}
+                            <tr>
+                                <td><b>{{ .Name }}</b></td>
+                                {{ range .Sets }}
+                                    <td>{{ .Reps }}</td>
+                                    <td>{{ .Weight }}</td>
+                                    <td>{{ index .Time 2 }}</td>
+                                    </tr><tr><td></td>
+                                {{ end }}
+                            </tr>
+                            {{ end }}
+                        </tbody>
+                    </table>
+                </section>
+            {{ end }}
+        </main>
+    </body>
+</html>

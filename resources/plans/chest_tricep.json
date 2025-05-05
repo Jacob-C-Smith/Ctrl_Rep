@@ -4,42 +4,50 @@
         {
             "exercise": "Barbell Bench Press",
             "sets": 4,
-            "reps": 6
+            "reps": 6,
+            "weight" : 10
         },
         {
             "exercise": "Incline Dumbbell Press",
             "sets": 3,
-            "reps": 8
+            "reps": 8,
+            "weight" : 10
         },
         {
             "exercise": "Chest Dips",
             "sets": 3,
-            "reps": 8
+            "reps": 8,
+            "weight" : 10
         },
         {
             "exercise": "Cable Chest Flyes",
             "sets": 3,
-            "reps": 10
+            "reps": 10,
+            "weight" : 10
         },
         {
             "exercise": "Tricep Rope Pushdowns",
             "sets": 3,
-            "reps": 10
+            "reps": 10,
+            "weight" : 10
         },
         {
             "exercise": "Overhead Dumbbell Tricep Extensions",
             "sets": 3,
-            "reps": 10
+            "reps": 10,
+            "weight" : 10
         },
         {
             "exercise": "Close Grip Barbell Bench Press",
             "sets": 3,
-            "reps": 8
+            "reps": 8,
+            "weight" : 10
         },
         {
             "exercise": "Skull Crushers",
             "sets": 3,
-            "reps": 10
+            "reps": 10,
+            "weight" : 10
         }
     ]
 }

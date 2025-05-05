@@ -1,6 +1,15 @@
-<section class="card" id="{{ .ExerciseSchema.Exercise }}" hx-trigger="click" hx-post="/card/advance" hx-swap="outerHTML">
-    <h2>{{ .ExerciseSchema.Exercise }}</h2>
-    <hr>
-    <p>{{ .ExerciseSchema.Sets }}&nbsp;Sets</p>
-    <p>{{ .ExerciseSchema.Reps }}&nbsp;Reps</p>
-</section>
+<form class="card" id="{{ .Card.ExerciseSchema.Exercise }}" hx-post="/card/advance" hx-swap="outerHTML">
+    <h2>{{ .Card.ExerciseSchema.Exercise }}</h2>
+    <h2>{{ .State }}</h2>
+    <label for="reps">Reps:</label><br>
+    <input type="number" id="reps" name="reps" value="{{ .Card.ExerciseSchema.Reps }}"><br>
+    <label for="weight">Weight:</label><br>
+    <input type="number" id="weight" name="weight" value="{{ .Card.ExerciseSchema.Weight }}"><br><br>
+    <input id="next" type="submit" value="NEXT">
+    <script>
+        document.body.addEventListener('htmx:configRequest', function (event) {
+            console.log("HA");
+            event.detail.parameters['timestamp'] = new Date().toLocaleTimeString();
+        });
+    </script>
+</form>

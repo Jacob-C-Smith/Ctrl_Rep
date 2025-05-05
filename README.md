@@ -1,131 +1,454 @@
-# Ctrl + Shift + Rep
+# https://fit.g10.app
+
 Plan and track workouts with minimal interaction
 
->  [Theme & Audience](#theme--audience)
->
->  [Planning](#planning)
->> [Form & Content](#form--content)
+See [PLANNING.md](PLANNING.md)
+
+>  [Data](#data)
+>> [Initial](#initial)
+>>
+>> [Users](#users)
+>>
+>> [Days](#days)
+>>
+>> [Acts](#acts)
+>>
+>> [Sets](#sets)
+>>
+>  [Routes](#routes)
+>> [Static](#static)
 >> 
->> [Model / View / Controller](#model--view--controller)
->>
->> [Time](#time)
->>
->
-> [Stretch goals](#stretch-goals)
+>> [Dynamic](#dynamic)
 
+## Data
+Data is organized in my [Key/Value database](https://github.com/Jacob-C-Smith/data). Keys are **strings**, and values are **JSON values**. The database is persistent and networked. I've organized data by carefully structuring keys. I'll expound on this structuring later. The structure of the keys determines the type of data encoded in the value. I encode 4 types of data; *Users*, *Days*, *Acts*, and *Sets*. 
 
+The database maintains two metadata keys. The **"fit"** key indicates that this database is being used for this application. The **"fit:users"** is an atomic cardinal number tracking the quantity of users that have registered. When a user registers, they are assigned the user ID of this key. The key is then incremented for the next (new) user. 
 
-## Theme & Audience
-I want something that I can mindlessly use at the gym, because when I'm at the gym, I am become mindless. More specifically, I want something that **1)** **plans my workouts**, and **2)** tracks my **weight**, **sets/reps**, and **times how long I spend on each exercise**. The former set of features are to be implemented for the most general of cases, to provide a flexible abstraction for the latter feature. The latter feature will use JSON descriptions of a daily exercise regimen to render the UI.
+### Commands
+The **"get"** command gets you a value from a key. The **"set"** keyword updates a property. 
 
-The audience is just me, but this is contingent on others wanting to use the app.
+```go
+// Key value database package
+package data
 
-## Planning
-Here, I detail form & content of an exercise regimen, the model/view/controller, and how time is an important consideration throughout
+type KeyValueDB struct {
+    ...
+}
 
-### Form & Content
-The first step is to create a JSON schema that describes the form of a "daily exercise regimen". You definitely know whata daily exercise regimen is, but in case you don't, please refer to the following
+// Constructor
+func NewDB(hostPort string) (key_value_db *KeyValueDB)
+
+// Get
+func (kv *KeyValueDB) Get(key string) (results []string)
+
+// Get all
+func (kv *KeyValueDB) GetAll(key string) (result []string)
+
+// Set
+func (kv *KeyValueDB) Set(key string, value []byte) (result string)
+
+// Write (the database to the disk)
+func (kv *KeyValueDB) Write() (result string)
+
+// Close (the connection cleanly)
+func (kv *KeyValueDB) Close()
+```
+
+### Initial
+When the service is launched for the first time, the database looks like this. 
 
 ```
-Me > What is an exercise regimen?
+ ✔  $ list
+fit:users                        : 0
+fit                              : true
 
-ChatGPT > An exercise regimen is a structured plan or schedule of physical activities designed to improve or maintain fitness, health, or performance. It typically includes details like:
-
-- Type of exercises (e.g., cardio, strength training, flexibility)
-- Frequency (how many days per week)
-- Duration (how long each session lasts)
-- Intensity (how hard you work—light, moderate, vigorous)
-- Progression (how the plan evolves over time)
-
-[...]
+Connection from 45.32.223.17:46902
 ```
 
-Chat described a lot of things, but I care about the **type of exercise**, **sets**, and **reps**. The other things are either not applicable or are discussed later. 
+### Users
 
-A JSON document describing such a plan might look like this.\
-**NOTE**: The null value means *"Do as many reps as you can"*
+[Image](img/signup.png)
 
-```Back and Bicep Day.json```
-```json
-{ 
-    "back":
-    [
-        {
-            "exercise" : "Deadlifts",
-            "sets"     : 4,
-            "reps"     : 5
-        },
-        {
-            "exercise" : "Lat Pulldowns",
-            "sets"     : 3,
-            "reps"     : null
-        },
-        {
-            "exercise" : "Bent-Over Barbell Rows",
-            "sets"     : 3,
-            "reps"     : 10
-        },
-        {
-            "exercise" : "Single-Arm Dumbbell Rows",
-            "sets"     : 3,
-            "reps"     : 10
-        },
-        {
-            "exercise" : "Rear Delt Flyes",
-            "sets"     : 3,
-            "reps"     : 10
-        }
-    ],
-    "biceps" :
-    [
-        {
-            "exercise" : "Barbell Curls",
-            "sets"     : 3,
-            "reps"     : 10
-        },
-        {
-            "exercise" : "Incline Dumbbell Curls",
-            "sets"     : 3,
-            "reps"     : 10
-        },
-        {
-            "exercise" : "Cable Hammer Curls",
-            "sets"     : 3,
-            "reps"     : 10
-        }
-    ]
+When a user registers an account, the database is updated.
+```
+ ✔  $ list
+fit                              : true
+fit:users                        : 4
+fit:user:0                       : {"user":"jake","pass":"..........34b9a31214c9651e2f3f..........","id":0,"day":0}
+fit:user:1                       : {"user":"alice","pass":"522b276a356bdf39013dfabea2cd43e141ecc9e8","id":1,"day":0}
+fit:user:2                       : {"user":"bob","pass":"48181acd22b3edaebc8a447868a7df7ce629920a","id":2,"day":0}
+fit:user:3                       : {"user":"charlie","pass":"d8cd10b920dcbdb5163ca0185e402357bc27c265","id":3,"day":0}
+```
+
+### Days
+
+[Image](img/days.png)
+
+When a user begins an exercise plan, the database records which plan was selected.
+```
+fit                              : true
+fit:users                        : 4
+fit:user:0                       : {"user":"jake","pass":"..........34b9a31214c9651e2f3f..........","id":0,"day":0}
+fit:user:0:day:0                 : {"name":"Chest and Triceps","date":"2025-05-05"}
+fit:user:0:day:1                 : {"name":"Back and Bicep","date":"2025-05-06"}
+fit:user:1                       : {"user":"alice","pass":"522b276a356bdf39013dfabea2cd43e141ecc9e8","id":1,"day":0}
+...
+```
+
+### Acts and sets
+Specific details and timestamps are encoded for each set, of each act.
+Some data has been omitted / augmented. See [Full](full.md) for a dump from a test run
+
+```
+fit                              : true
+fit:users                        : 4
+fit:user:0                       : {"user":"jake","pass":"..........34b9a31214c9651e2f3f..........","id":0,"day":0}
+fit:user:0:day:0                 : {"name":"Chest and Triceps","date":"2025-05-05"}
+fit:user:0:day:0:act:0           : "Barbell Bench Press"
+fit:user:0:day:0:act:0:set:0     : {"time":["9:42:03 PM","9:42:44 PM","41s"],"kg":120,"reps":6}
+fit:user:0:day:0:act:0:set:1     : {"time":["9:43:09 PM","9:44:08 PM","59s"],"kg":130,"reps":6}
+fit:user:0:day:0:act:0:set:2     : {"time":["9:45:17 PM","9:46:18 PM","1m1s"],"kg":150,"reps":6}
+fit:user:0:day:0:act:1           : "Incline Dumbbell Press"
+fit:user:0:day:0:act:2           : "Chest Dips"
+fit:user:0:day:0:act:3           : "Cable Chest Flyes"
+fit:user:0:day:0:act:4           : "Tricep Rope Pushdowns"
+fit:user:0:day:0:act:5           : "Overhead Dumbbell Tricep Extensions"
+fit:user:0:day:0:act:6           : "Close Grip Barbell Bench Press"
+fit:user:0:day:0:act:7           : "Skull Crushers"
+fit:user:1                       : {"user":"alice","pass":"522b276a356bdf39013dfabea2cd43e141ecc9e8","id":1,"day":0}
+...
+```
+
+## Routes
+### Static route
+```
+static/
+└── style.css
+```
+### Dynamic routes
+```
+/                      : GET
+├── /signup            : GET
+│   └── /signup/submit : POST
+├── /login             : GET
+│   └── /login/submit  : POST
+├── /card              : GET
+│   ├── /card/done     : POST
+│   └── /card/advance  : POST
+└── /history           : GET
+```
+
+The signup routes are used for registering accounts. The login route is for existing users. The card routes are the most interesting. GET()ing a card adds context to the users session, and presents the exercise page. The user enters information about their exercise into the form, while front end javascript collects timestamps between form submissions. Form data is POST()ed to the advance route. The advance route responds with a new card for the end user. This process repeats until the exercise is done. The final POST() to done finalizes the data entry and updates the state of the application. 
+
+
+## Structural 
+I've made a cut down version of the code to save you time. Many omissions have been made for brevity, however the full source code can be found in [main.go](main.go)
+
+main.go
+```go
+// Package declaration
+package main
+
+// Imports
+import (
+    ...
+)
+
+// Structure definitions
+type User struct { ... }
+
+type ExercisePlanSchema struct { ... }
+
+type ExercisePlan struct { ... }
+
+type ExerciseSchema struct { ... }
+
+type Exercise struct { ... }
+
+type SetRecord struct { ... }
+
+type ActRecord struct { ... }
+
+type DayRecord struct { ... }
+
+// Data
+//
+
+// Error check
+func ok(err error) {
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+// Plan
+func NewExercisePlanSchema(path string) (exercise_plan_schema *ExercisePlanSchema, err error) {
+
+	// Allocate
+    //
+      
+	// Load
+    //
+
+	return
+}
+
+func NewExercisePlan(exercise_plan_schema *ExercisePlanSchema) (exercise_plan *ExercisePlan, err error) {
+
+
+	// Allocate
+    //
+
+	// Copy from schema
+    //    
+
+	return
+}
+
+// User
+func (user *User) GetActiveExercise() *Exercise {
+    // This function is very ugly
+}
+
+func (user *User) GetActiveExerciseIndex() int {
+    // This function is very ugly
+}
+
+func (user *User) GetStateString() (result string) {
+    // This function is very ugly
+}
+
+// Session
+func Get(r *http.Request) (user *User, err error) {
+
+	// Initialized data
+	var cookie *http.Cookie = nil
+
+	// Store the cookie from the request
+	cookie, err = r.Cookie("session")
+
+	// Store the session
+	user = Sessions[cookie.Value]
+
+	// Success
+	return user, err
+}
+
+func Set(w http.ResponseWriter, username string) {
+
+	// Set the cookie
+	http.SetCookie(w, &http.Cookie{
+		Name:     "session",
+		Value:    username, // Could do better. Will do better. 
+		HttpOnly: true,
+		Expires:  time.Now().Add(24 * time.Hour),
+		Path:     "/",
+	})
+}
+
+// Routes
+func landing_page(w http.ResponseWriter, r *http.Request) {
+
+	//
+    // Respond
+}
+
+func login_page(w http.ResponseWriter, r *http.Request) {
+
+	//
+    // Respond
+}
+
+func login_submit(w http.ResponseWriter, r *http.Request) {
+
+	// Hash password
+	h := sha1.New()
+	h.Write([]byte(password))
+	password = hex.EncodeToString(h.Sum(nil))
+
+	// Check the password against the correct password
+	if user.Password == password {
+
+		// Set the user cookie
+		Set(w, username)
+
+		// All done
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	} else {
+
+        // Error
+		http.Redirect(w, r, "/login", http.StatusSeeOther)
+	}
+
+	// Error
+	http.Error(w, "Failed to authenticate!", http.StatusNotFound)
+}
+
+func signup_page(w http.ResponseWriter, r *http.Request) {
+
+	// Execute the login page template
+	ok(Templates.ExecuteTemplate(w, "signup", nil))
+}
+
+func signup_submit(w http.ResponseWriter, r *http.Request) {
+
+	// Hash password
+	h := sha1.New()
+	h.Write([]byte(password))
+	hp := hex.EncodeToString(h.Sum(nil))
+
+    // Store new user
+	kv.Set("fit:user:%d")
+
+    // Update user quantity
+	kv.Set("fit:users")
+
+    // Commit
+	kv.Write()
+
+	// Add the new account to the session list
+    //
+
+	// Set the user cookie for subsequent requests
+    //
+
+    // Result
+}
+
+func card_page(w http.ResponseWriter, r *http.Request) {
+
+	// Store the starting exercise
+	plan = r.URL.Query().Get("start")
+
+	// Construct a new exercise plan by replicating the schema
+	user.ActiveExercisePlan, err = NewExercisePlan(PlanCatalog[plan])
+
+	// Initialize the counter
+	user.ActiveExercisePlan.Ti = -1
+
+	// Result
+    // 
+}
+
+func card_advance(w http.ResponseWriter, r *http.Request) {
+
+	// Parse advance
+    //
+    
+	// Increment the logical timestamp
+	u.ActiveExercisePlan.Ti++
+
+	// Edge case ( user is done )
+	if u.ActiveExercisePlan.Ti >= u.ActiveExercisePlan.T1 {
+
+        // Respond
+		ok(Templates.ExecuteTemplate(w, "done", active_exercise))
+		return
+	}
+
+	// Set the day's exercise plan
+	kv.Set("fit:user:%d:day:%d")
+
+	// Global time - Start of this set 
+	var timestamp_logical_set int = u.ActiveExercisePlan.Ti - u.GetActiveExercise().T0
+
+	// Set the specific act
+	kv.Set("fit:user:%d:day:%d:act:%d")
+    
+	// Set completed 
+    // NOTE: by testing the parity of timestamp_logical_set, one can deduce
+    //       if the timestamp was taken from the start or end of the rest period
+	if timestamp_logical_set%2 == 0 && timestamp_logical_set != 0 {
+        
+        // Store a set
+	    kv.Set("fit:user:%d:day:%d:act:%d:set:%d")
+
+	}
+
+	// Send the next card
+    //
+}
+
+func card_done(w http.ResponseWriter, r *http.Request) {
+
+	// Update DB
+	kv.Set("fit:user:%d", u.ID)
+
+    // Commit changes
+	kv.Write()
+
+    // Update session
+	Sessions[u.Username] = u
+
+	// All done
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func history(w http.ResponseWriter, r *http.Request) {
+
+    // Get the days
+	days := kv.GetAll("fit:user:%d:day")
+
+    // Foreach day
+	for i := user.Day - 1; i >= 0; i-- {
+
+        // Get the acts
+		acts := kv.GetAll("fit:user:%d:day:%d:act")
+
+        // Foreach act
+		for j := 0; j < len(acts); j++ {
+
+            // Get the sets
+            sets := kv.GetAll("fit:user:%d:day:%d:act:%d:set")
+            
+            // Foreach set
+			for k := 0; k < len(sets); k++ {
+                // Decode each set
+			}
+		}
+	}
+
+	// Execute the history template with the result of the for for for loop 
+    // 
+}
+
+// Initialize
+func init() {
+
+	// Connect to the database
+	kv = data.NewDB("data.g10.app:6764")
+
+	// Get each user
+	db_users := kv.GetAll("fit:user")
+
+	// Construct a session foreach user
+}
+
+// Entry point
+func main() {
+
+	// Static
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static/"))))
+
+	// Routes
+	http.HandleFunc("/", landing_page)
+	http.HandleFunc("/signup/", signup_page)
+	http.HandleFunc("/signup/submit", signup_submit)
+	http.HandleFunc("/login/", login_page)
+	http.HandleFunc("/login/submit", login_submit)
+	http.HandleFunc("/card/", card_page)
+	http.HandleFunc("/card/done", card_done)
+	http.HandleFunc("/card/advance", card_advance)
+	http.HandleFunc("/history", history)
+
+	// Log
+	fmt.Println("Starting HTTPS server on https://fit.g10.app")
+
+	// Host
+	err := http.ListenAndServeTLS(":8082", "/root/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/g10.app/g10.app.crt", "/root/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/g10.app/g10.app.key", nil)
+	if err != nil {
+		fmt.Println("Error starting server:", err)
+	}
 }
 ```
-
-Making a schema for this data format is the next step. If you start by writing a schema, you will reap many rewards including vscode autofill, robust validatation, and useful insights into how you will need to structure data in the application. But the best part about making a schema is that you can write tests based on the rules in the schema. The tests essentially write themselves. 
-
-### Model / View / Controller
-At the core of the data model is a list of objects. There exists one object for each calendar day since the user started using with the application. Each object contains an exercise regimen object, and a clone of that exercise regimen. The clone contains additional properties that are collected throughout the exercise. These additional properties are detailed in the controller section
-
-The view will be very simple. Each view will persistent an identical navigation element ad the head of the page. The navigation bar will have two elements. The first is for viewing historical exercise data, and this will be as mundane as you'd imagine. The second is for interacting with the app during an exercise. The views change throughout the exercise, updating as the user proceeds, and guiding the user through the regimen. Future additions include ~~encouraging / bullying the user based on how they are performing~~
-
-The controller is very minimal. The view presents the current exercise, and some number inputs in a form. These are for the weight/reps/sets. A big green **NEXT** button is used to advance the view to the next exercise. I don't want to spend my rest period doing manual data entry, so the weight/reps/sets are populated with from the previous instance of this specific exercise regimen. 99% of the time, I can just click **NEXT** through my exercise. One button. One braincell. It sells itself. 
-
-## Time 
-Each time the user clicks the next button, a timestamp is recorded. These timesteps, if properly recorded, can be used to derive many useful values, some of which I have not enumerated here because I still haven't thought of them
-
-```
- 1. Total time spent resting 
- 2. Total time spent exercising 
-
- 3. Time spent resting for a specific exercise
- 4. Time spent exercising for a specific exercise
-
- 5. Statistics of 1 and 2
- 6. Statistics of 3 and 4
- ```
-
-## Stretch Goals
-
-### Graphical view 
-It would be nice to present statistics graphically. Maybe a bar chart? Maybe a graph? Maybe something else, but ***definitely a strategy pattern!*** 
-
-### Friends 
-My first idea was color coding different lines foreach friend, and compositing the result onto the SVG view. Then I remembered that sharing data between users is fraught with traps. For instance, people get competitive about quantifiable statistics. I don't know why this is a thing, but I will not have my code enable this behavior.Competition might discourage the "losers", and this is an unacceptable outcome. Ethics aside, each sample was sampled from a unique source. Unique sources produce incommensurate data. Eo ipso, the data would be meaningless.
-
-My second idea is was, if a user has been consistently exceeding their baseline, their friends will get a notification, instructing them to encourage the user. This change would replace meaningless numbers and meaningless competitions with a collaborative social network. When you're doing well, everybody will know. If not, radio silence. 

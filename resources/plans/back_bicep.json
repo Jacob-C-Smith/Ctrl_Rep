@@ -5,42 +5,50 @@
         {
             "exercise" : "Deadlifts",
             "sets"     : 4,
-            "reps"     : 5
+            "reps"     : 5,
+            "weight"   : 10
         },
         {
             "exercise" : "Lat Pulldowns",
             "sets"     : 3,
-            "reps"     : 3
+            "reps"     : 3,
+            "weight"   : 10
         },
         {
             "exercise" : "Bent Over Barbell Rows",
             "sets"     : 3,
-            "reps"     : 10
+            "reps"     : 10,
+            "weight"   : 10
         },
         {
             "exercise" : "Single Arm Dumbbell Rows",
             "sets"     : 3,
-            "reps"     : 10
+            "reps"     : 10,
+            "weight"   : 10
         },
         {
             "exercise" : "Rear Delt Flyes",
             "sets"     : 3,
-            "reps"     : 10
+            "reps"     : 10,
+            "weight"   : 10
         },
         {
             "exercise" : "Barbell Curls",
             "sets"     : 3,
-            "reps"     : 10
+            "reps"     : 10,
+            "weight"   : 10
         },
         {
             "exercise" : "Incline Dumbbell Curls",
             "sets"     : 3,
-            "reps"     : 10
+            "reps"     : 10,
+            "weight"   : 10
         },
         {
             "exercise" : "Cable Hammer Curls",
             "sets"     : 3,
-            "reps"     : 10
+            "reps"     : 10,
+            "weight"   : 10
         }
     ]
 }

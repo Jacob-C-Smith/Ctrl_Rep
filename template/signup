@@ -3,20 +3,19 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Log In</title>
+        <title>Fit > Sign Up</title>
         <link rel="stylesheet" href="/static/style.css">
     </head>
 
     <body>
         <main>
-            <form id="login" action="/login/submit" method="post">
-                <h2>Log in</h2>
+            <form id="signup" action="/signup/submit" method="post">
+                <h2>Sign up</h2>
                 <label for="username">Username:</label><br>
                 <input type="text" id="username" name="username" value=""><br>
                 <label for="password">Password:</label><br>
                 <input type="password" id="password" name="password" value=""><br><br>
-                <input type="submit" value="Log in">
-                or <a href="/signup">Sign up</a>
+                <input type="submit" value="Sign in">
             </form> 
         </main>
     </body>

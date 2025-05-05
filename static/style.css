@@ -1,4 +1,4 @@
-body {
+html, body {
   margin: 0;
 }
 
@@ -19,7 +19,31 @@ section.plan {
   justify-items: center;
 } 
 
-section.card {
+section.workout_day {
+  display: grid;
+  color: black;
+  border: black 0.5rem;
+  border-style: ridge;
+  border-radius: 10px;
+  padding: 0rem 2rem;
+  margin: 0rem 0rem 2rem 0rem;
+  align-items: center;
+  justify-items: center;
+}
+
+
+section.workout_day h2 {
+  margin: 1rem 0 0 0;
+}
+section.workout_day dl dd {
+  margin-bottom: 0.5rem;
+}
+
+section.workout_day dl dd:last-of-type {
+  margin-bottom: 0;
+}
+
+form.card {
   display: block;
   color: black;
   border: solid black 0.5rem;
@@ -34,12 +58,18 @@ section.card {
 }
 
 section.card.done {
-    background-color: #7eff7e;
-    text-align: center;
-}
-
-section.card h2 {
-  width: inherit;
+  
+  display: block;
+  color: black;
+  border: solid black 0.5rem;
+  border-radius: 10px;
+  padding: 1rem 1rem 0.5rem 1rem;
+  width: 50vw;
+  box-shadow: 1rem 1rem #7f7fff;
+  align-items: center;
+  align-self: center;
+  justify-items: center;
+  justify-self: center;
 }
 
 main.catalog {
@@ -48,4 +78,75 @@ main.catalog {
   align-self: center;
   justify-self: center;
   justify-items: center;
+}
+
+#login {
+  display: inline-block;
+  border: 1px black solid;
+  padding: 2rem;
+  margin-bottom: 5rem;
+}
+
+#signup {
+  display: inline-block;
+  border: 1px black solid;
+  padding: 2rem;
+  margin-bottom: 5rem;
+}
+
+#login h2 {
+  margin: 0 0 1rem 0;
+}
+
+#signup h2 {
+  margin: 0 0 1rem 0;
+}
+
+main {
+  justify-items: center;
+  align-content: center;
+  height: 100%;
+}
+
+#next {
+  height: 2.5rem;
+  font-size: 1.5rem;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  border: 0.2rem none;
+  background-color: lightgray;
+  color:gray;
+  border-radius: 10px;
+  display: block;
+  width: 9rem;
+  box-shadow: 0.25rem 0.25rem #007f7f;
+  align-items: center;
+  align-self: center;
+  justify-items: center;
+  justify-self: center;
+  margin-bottom: 1rem;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+td, th {
+  border: 1px solid lightgray;
+  padding: 8px;
+}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #7f7fff;
+  color: #ffffff;
+}
+
+tr > td:empty {
+  border: 0;
+}
+
+tr > td:only-child:empty {
+  display: none;
 }

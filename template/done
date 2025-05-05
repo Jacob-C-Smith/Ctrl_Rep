@@ -1,5 +1,5 @@
-<a href="/">
+<a href="/card/done">
     <section class="card done">
-        <h2>DONE</h2>
+        <h2>Back</h2>
     </section>
 </a>
