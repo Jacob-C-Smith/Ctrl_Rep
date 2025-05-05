@@ -11,14 +11,14 @@ See [PLANNING.md](PLANNING.md)
 >>
 >> [Days](#days)
 >>
->> [Acts](#acts)
->>
->> [Sets](#sets)
+>> [Acts & Sets](#acts-and-sets)
 >>
 >  [Routes](#routes)
 >> [Static](#static)
 >> 
 >> [Dynamic](#dynamic)
+>>
+> [Structure](#structure)
 
 ## Data
 Data is organized in my [Key/Value database](https://github.com/Jacob-C-Smith/data). Keys are **strings**, and values are **JSON values**. The database is persistent and networked. I've organized data by carefully structuring keys. I'll expound on this structuring later. The structure of the keys determines the type of data encoded in the value. I encode 4 types of data; *Users*, *Days*, *Acts*, and *Sets*. 
@@ -121,12 +121,12 @@ fit:user:1                       : {"user":"alice","pass":"522b276a356bdf39013df
 ```
 
 ## Routes
-### Static route
+### Static
 ```
 static/
 └── style.css
 ```
-### Dynamic routes
+### Dynamic
 ```
 /                      : GET
 ├── /signup            : GET
@@ -142,7 +142,7 @@ static/
 The signup routes are used for registering accounts. The login route is for existing users. The card routes are the most interesting. GET()ing a card adds context to the users session, and presents the exercise page. The user enters information about their exercise into the form, while front end javascript collects timestamps between form submissions. Form data is POST()ed to the advance route. The advance route responds with a new card for the end user. This process repeats until the exercise is done. The final POST() to done finalizes the data entry and updates the state of the application. 
 
 
-## Structural 
+## Structure 
 I've made a cut down version of the code to save you time. Many omissions have been made for brevity, however the full source code can be found in [main.go](main.go)
 
 main.go
